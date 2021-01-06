@@ -25,8 +25,8 @@ def create_hparams(hparams_string=None, verbose=False):
         # Data Parameters             #
         ################################
         load_mel_from_disk=False,
-        training_files='',
-        validation_files='',
+        training_files='', # path to meta file containing paths to ema and phoneme sequence files for training
+        validation_files='', # path to meta file containing paths to ema and phoneme sequence files for validation
         text_cleaners=['english_cleaners'],
 
         ################################

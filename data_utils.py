@@ -11,9 +11,9 @@ from text import text_to_sequence
 
 class TextMelLoader(torch.utils.data.Dataset):
     """
-        1) loads audio,text pairs
-        2) normalizes text and converts them to sequences of one-hot vectors
-        3) computes mel-spectrograms from audio files.
+        1) loads EMA,phoneme sequence pairs
+        2) converts phonemes to sequences of one-hot vectors
+        3) normalize EMA signals
     """
     def __init__(self, audiopaths_and_text, hparams):
         self.audiopaths_and_text = load_filepaths_and_text(audiopaths_and_text)
@@ -37,21 +37,6 @@ class TextMelLoader(torch.utils.data.Dataset):
         return (text, mel)
 
     def get_mel(self, filename):
-        """if not self.load_mel_from_disk:
-            audio, sampling_rate = load_wav_to_torch(filename)
-            if sampling_rate != self.stft.sampling_rate:
-                raise ValueError("{} {} SR doesn't match target {} SR".format(
-                    sampling_rate, self.stft.sampling_rate))
-            audio_norm = audio / self.max_wav_value
-            audio_norm = audio_norm.unsqueeze(0)
-            audio_norm = torch.autograd.Variable(audio_norm, requires_grad=False)
-            melspec = self.stft.mel_spectrogram(audio_norm)
-            melspec = torch.squeeze(melspec, 0)
-        else:
-            melspec = torch.from_numpy(np.load(filename))
-            assert melspec.size(0) == self.stft.n_mel_channels, (
-                'Mel dimension mismatch: given {}, expected {}'.format(
-                    melspec.size(0), self.stft.n_mel_channels))"""
         emamat=scipy.io.loadmat(filename)
         data=clip_ema_silence(filename)
         data=torch.from_numpy(np.transpose(data))
@@ -76,7 +61,7 @@ class TextMelCollate():
         self.n_frames_per_step = n_frames_per_step
 
     def __call__(self, batch):
-        """Collate's training batch from normalized text and mel-spectrogram
+        """Collate's training batch from phoneme sequences and EMA
         PARAMS
         ------
         batch: [text_normalized, mel_normalized]

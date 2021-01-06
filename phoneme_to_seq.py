@@ -7,7 +7,7 @@ import numpy as np
 def prep_dct():
     dct={}
     i=0
-    f=open('ph2spec_Data/dct.txt','r')
+    f=open('path to dictionary file containing phoneme set','r')
     lines=f.readlines()
     for line in lines:
         dct[(line[:-1])]=i
@@ -34,8 +34,8 @@ def clip_ema_silence(ema_path):
     #load ema data
     emamat=scipy.io.loadmat(ema_path)
     data=emamat['EmaData']
-    #clipping
-    startstoppth=(os.path.join('ph2spec_Data/StartStopMat',sub))
+    #clipping #OPTIONAL
+    startstoppth=(os.path.join('path to mat file containing time stamps to clip off noisy extremities',sub))
     ssmat=scipy.io.loadmat(os.path.join(startstoppth,os.listdir(startstoppth)[0]))
     BeginEnd=ssmat['BGEN']
     EBegin=np.int(BeginEnd[0,F-1]*100) # F: sent ID
